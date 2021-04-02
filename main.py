@@ -1,6 +1,6 @@
+import sys
 import time as t
 import numpy as np
-import thread
 from datetime import datetime
 
 from component import *
@@ -8,12 +8,23 @@ from inspector import *
 from product import *
 from workstation import *
 
-ws1 = Workstation('ws1', 'c1',  'p1')
-ws2 = Workstation('ws2', 'c1c2','p2')
-ws3 = Workstation('ws3', 'c1c3','p3')
+try:
+	ws1 = Workstation('ws1', 'c1',  'p1')
+	ws2 = Workstation('ws2', 'c1c2','p2')
+	ws3 = Workstation('ws3', 'c1c3','p3')
 
-i1 = Inspector('i1')
-i2 = Inspector('i2')
+	i1 = Inspector('i1')
+	i2 = Inspector('i2')
+
+	ws1.start()
+	ws2.start()
+	ws3.start()
+	i1.start()
+	i2.start()
+
+except KeyboardInterrupt:
+	sys.exit()
+
 
 '''
 capacity = [

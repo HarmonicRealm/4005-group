@@ -3,21 +3,19 @@ from component import Component
 import threading
 import time
 
-exitFlag = 0
-
-
 class Inspector(threading.Thread):
 
 	def __init__(self, name):
+		super().__init__()
 		self.name = name
 		self.status = 'WORK'
 		self.component = None
 
 	def run(self):
-		if self.status = 'WORK':
+		if self.status == 'WORK':
 			for i in range(300):
-				self.component = getComponent(i)
-				self.inpectComponent()
+				self.getComponent(i)
+				self.inspectComponent()
 				self.releaseComponent()
 
 	def getComponent(self, i):

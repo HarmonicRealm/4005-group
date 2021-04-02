@@ -8,8 +8,9 @@ exitFlag = 0
 class Workstation(threading.Thread):
 
 	def __init__(self, name, accept, builds):
+		super().__init__()
 		self.name = name
-		self.status = 'IDLE'
+		self.status = 'WORK'
 		self.accept = accept
 		self.builds = builds
 		self.productsBuilt = 0
@@ -18,6 +19,11 @@ class Workstation(threading.Thread):
 			self.arr = [0,0]
 		else:
 			self.arr = [0,0,0,0]
+
+
+	def run(self):
+		if self.status == 'WORK':
+			print('')
 
 	def storeComponent(self, component):
 		for i in range(len(self.arr)):
