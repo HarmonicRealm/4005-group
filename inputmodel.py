@@ -1,13 +1,16 @@
+import time as t
 import pylab
 import numpy as np
 import scipy.stats as stats
+from datetime import *
 
+'''
 ws1 = np.loadtxt('./ws1.dat')
-ws2 = np.loadtxt('./ws2.dat')
-ws3 = np.loadtxt('./ws3.dat')
-servinsp1  = np.loadtxt('./servinsp1.dat')
-servinsp22 = np.loadtxt('./servinsp22.dat')
-servinsp23 = np.loadtxt('./servinsp23.dat')
 
-stats.probplot(ws1, plot=pylab)
-pylab.show()
+print('Wait {}'.format(ws1[1]))
+t1 = datetime.now()
+t.sleep(ws1[1])
+t2 = datetime.now()
+elapsed = (t2-t1).total_seconds()
+print('Waited {}'.format(elapsed))
+'''
