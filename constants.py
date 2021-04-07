@@ -1,3 +1,4 @@
+SIZE = 10
 INSPECTOR1 = 'inspector 1'
 INSPECTOR2 = 'inspector 2'
 WORKSTATION1 = 'workstation 1'

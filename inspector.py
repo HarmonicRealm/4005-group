@@ -15,10 +15,14 @@ class inspector(threading.Thread):
 ##	inspector sets components, inspects, then releases
 
 	def run(self):
-		for i in range(300):
+		for i in range(SIZE):
 			self.setComponent(i)
 			self.inspectComponent()
+			while self.Blocked() and self.shared_mem.isRunning(): 1
 			self.releaseComponent()
+
+		self.shared_mem.quit()
+		self.dumpStats()
 		return
 
 ## inspector gets C1 if its inspector 1, C2 or C3 if its inspector 2
@@ -32,7 +36,7 @@ class inspector(threading.Thread):
 			else:
 				self.component = component(COMPONENT3, i)
 
-		#print("{} got {}".format(self.getName(), self.component.getName()))
+		print("{} got {}".format(self.getName(), self.component.getName()))
 		return
 
 ## inspector waits the component time
@@ -41,19 +45,65 @@ class inspector(threading.Thread):
 		t = self.getComponent().getInspectionTime()
 		time.sleep(t)
 
-		#print ("{} waited {}".format(self.getName(), t))
+		print ("{} waited {}".format(self.getName(), t))
 		return
+
+
+## check to see if able to deposit the component in associated buffer
+
+	def Blocked(self):
+		x = False
+
+		if self.getName() == INSPECTOR1:
+			if  self.shared_mem.read(WORKSTATION1, COMPONENT1) == 2 and \
+				self.shared_mem.read(WORKSTATION2, COMPONENT1) == 2 and \
+				self.shared_mem.read(WORKSTATION3, COMPONENT1) == 2:
+				x = True
+		
+		if self.component.getName() == COMPONENT2:
+			if self.shared_mem.read(WORKSTATION2, COMPONENT2) == 2:
+				x = True
+		
+		if self.component.getName() == COMPONENT3:
+			if self.shared_mem.read(WORKSTATION3, COMPONENT3) == 2:
+				x = True
+		
+		return x
+
 
 ## inspector sends the component to the shared memory
 
 	def releaseComponent(self):
-		if self.getName() == INSPECTOR1:
-			
-		else:
+		WORKSTATIONX = -1
 
-		#print("{} sent {} to {}".format(self.getName(), self.component.getName(), WORKSTATION1))
+		if self.getName() == INSPECTOR1:
+			WORKSTATIONX = self.shared_mem.leastComponent1()
+			self.shared_mem.write(WORKSTATIONX, COMPONENT1)
+
+		elif self.component.getName() == COMPONENT2:
+			WORKSTATIONX = WORKSTATION2
+			self.shared_mem.write(WORKSTATION2, COMPONENT2)
+		
+		else:
+			WORKSTATIONX = WORKSTATION3
+			self.shared_mem.write(WORKSTATION3, COMPONENT3)
+
+		print("{} sent {} to {}".format(self.getName(), self.component.getName(), WORKSTATIONX))
 		self.removeComponent()
 		return
+
+
+##	dump stats into txt files
+
+	def dumpStats(self):
+		t = 0
+		if self.getName() == INSPECTOR1:
+			f = './output/insp1out'
+		else:
+			f = './output/insp2out'
+		with open(f, 'w') as file:
+			file.write('{} time: {}'.format(self.getName(), t))
+
 
 ## attribute getters
 	
