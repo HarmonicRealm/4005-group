@@ -1,14 +1,12 @@
-from component import *
-from inspector import *
-from product import *
-from workstation import *
+from constants import *
+from inspector import inspector
+from shared_mem import shared_mem
+from workstation import workstation
+import threading
 
-c1 = Component('c1')
-i1 = Inspector('i1')
-p1 = Product('p1')
-w1 = Workstation('w1')
-
-print(c1.getName())
-print(i1.getName())
-print(p1.getName())
-print(w1.getName())
+shm = shared_mem()
+ws1 = workstation(WORKSTATION1, shm).start()
+ws2 = workstation(WORKSTATION2, shm).start()
+ws3 = workstation(WORKSTATION3, shm).start()
+i1 = inspector(INSPECTOR1, shm).start()
+i2 = inspector(INSPECTOR2, shm).start()
