@@ -11,12 +11,13 @@ class inspector(threading.Thread):
 		self.status = START
 		self.component = None
 		self.shared_mem = shm
+		self.components_inspected = 0
 
 ##	inspector sets components, inspects, then releases
 
 	def run(self):
-		for i in range(SIZE):
-			self.setComponent(i)
+		while self.getComponentsInspected() <= SIZE and self.shared_mem.isRunning():
+			self.setComponent(self.getComponentsInspected())
 			self.inspectComponent()
 			while self.Blocked() and self.shared_mem.isRunning(): 1
 			self.releaseComponent()
@@ -46,6 +47,7 @@ class inspector(threading.Thread):
 		time.sleep(t)
 
 		print ("{} waited {}".format(self.getName(), t))
+		self.components_inspected += 1
 		return
 
 
@@ -102,7 +104,7 @@ class inspector(threading.Thread):
 		else:
 			f = './output/insp2out'
 		with open(f, 'w') as file:
-			file.write('{} time: {}'.format(self.getName(), t))
+			file.write('{}\ntime: {}\ncomponents inspected:{}'.format(self.getName(), t, self.getComponentsInspected()))
 
 
 ## attribute getters
@@ -119,3 +121,6 @@ class inspector(threading.Thread):
 	def removeComponent(self):
 		self.component = None
 		return
+
+	def getComponentsInspected(self):
+		return self.components_inspected
