@@ -12,6 +12,8 @@ class inspector(threading.Thread):
 		self.component = None
 		self.shared_mem = shm
 		self.components_inspected = 0
+		self.total_work_time = 0
+		self.total_blocked_time = 0
 
 ##	inspector sets components, inspects, then releases
 
@@ -124,3 +126,9 @@ class inspector(threading.Thread):
 
 	def getComponentsInspected(self):
 		return self.components_inspected
+
+	def getTotalWorkTime(self):
+		return self.total_work_time
+
+	def getTotalBlockedTime(self):
+		return self.total_blocked_time
