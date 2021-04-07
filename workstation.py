@@ -11,6 +11,7 @@ class workstation(threading.Thread):
 		self.products_made = 0
 		self.shared_mem = shm
 		self.production_time = 0
+		self.total_work_time = 0
 
 	def run(self):
 		while self.shared_mem.isRunning():
@@ -84,4 +85,7 @@ class workstation(threading.Thread):
 	def setProductsMade(self):
 		self.products_made += 1
 		print("{} made a product".format(self.getName()))
+
+	def getTotalWorkTime(self):
+		return self.total_work_time
 
