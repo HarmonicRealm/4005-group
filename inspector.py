@@ -3,7 +3,7 @@ import random
 import threading
 from constants import *
 from component import component
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class inspector(threading.Thread):
 	def __init__(self, name, shm):
@@ -13,24 +13,31 @@ class inspector(threading.Thread):
 		self.component = None
 		self.shared_mem = shm
 		self.components_inspected = 0
+		self.start_work_time = datetime.now()
 		self.total_work_time = 0
 		self.total_blocked_time = 0
 
 ##	inspector sets components, inspects, then releases
 
 	def run(self):
-		start = 0
-		blocked = 0
 		while self.getComponentsInspected() < SIZE and self.shared_mem.isRunning():
+			job_start = 0
+			job_blocked = 0
+			elapsed_time = 0
+
 			self.setComponent(self.getComponentsInspected())
 			self.inspectComponent()
-			start = datetime.now()
+			job_start = datetime.now()
 			while self.Blocked() and self.shared_mem.isRunning():
-				blocked = datetime.now()
-			self.total_blocked_time += (start - blocked).total_seconds()
+				job_blocked = datetime.now()
+			if job_blocked != 0:
+				elapsed_time = job_blocked - job_start
+				self.total_blocked_time += elapsed_time.total_seconds()
 			self.releaseComponent()
 
 		self.shared_mem.quit()
+		elapsed_time = datetime.now() - self.getStartTime()
+		self.total_work_time = elapsed_time.total_seconds()
 		self.dumpStats()
 		return
 
@@ -106,13 +113,17 @@ class inspector(threading.Thread):
 ##	dump stats into txt files
 
 	def dumpStats(self):
-		t = 0
-		if self.getName() == INSPECTOR1:
+		n = self.getName()
+		t = self.getTotalWorkTime()
+		b = self.getTotalBlockedTime()
+		c = self.getComponentsInspected()
+
+		if n == INSPECTOR1:
 			f = './output/insp1out'
 		else:
 			f = './output/insp2out'
 		with open(f, 'w') as file:
-			file.write('{}\ntime: {}\ncomponents inspected:{}\ntime blocked: {}'.format(self.getName(), t, self.getComponentsInspected(), self.getTotalBlockedTime()))
+			file.write('{}\ncomponents inspected:{}\ntotal time:{}\nblocked time:{}'.format(n,c,t,b))
 
 
 ## attribute getters
@@ -138,3 +149,6 @@ class inspector(threading.Thread):
 
 	def getTotalBlockedTime(self):
 		return self.total_blocked_time
+
+	def getStartTime(self):
+		return self.start_work_time
