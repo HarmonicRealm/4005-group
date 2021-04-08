@@ -3,6 +3,7 @@ import random
 import threading
 from constants import *
 from component import component
+from datetime import datetime
 
 class inspector(threading.Thread):
 	def __init__(self, name, shm):
@@ -18,10 +19,15 @@ class inspector(threading.Thread):
 ##	inspector sets components, inspects, then releases
 
 	def run(self):
-		while self.getComponentsInspected() <= SIZE and self.shared_mem.isRunning():
+		start = 0
+		blocked = 0
+		while self.getComponentsInspected() < SIZE and self.shared_mem.isRunning():
 			self.setComponent(self.getComponentsInspected())
 			self.inspectComponent()
-			while self.Blocked() and self.shared_mem.isRunning(): 1
+			start = datetime.now()
+			while self.Blocked() and self.shared_mem.isRunning():
+				blocked = datetime.now()
+			self.total_blocked_time += (start - blocked).total_seconds()
 			self.releaseComponent()
 
 		self.shared_mem.quit()
@@ -106,7 +112,7 @@ class inspector(threading.Thread):
 		else:
 			f = './output/insp2out'
 		with open(f, 'w') as file:
-			file.write('{}\ntime: {}\ncomponents inspected:{}'.format(self.getName(), t, self.getComponentsInspected()))
+			file.write('{}\ntime: {}\ncomponents inspected:{}\ntime blocked: {}'.format(self.getName(), t, self.getComponentsInspected(), self.getTotalBlockedTime()))
 
 
 ## attribute getters
