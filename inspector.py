@@ -45,7 +45,7 @@ class inspector(threading.Thread):
 	
 	def setComponent(self, i):
 		if self.getName() == INSPECTOR1:
-			self.component = component(COMPONENT1, i)
+			self.component = component(COMPONENT1, 0)
 		else:
 			if random.randint(2,3) == 2:
 				self.component = component(COMPONENT2, i)
@@ -72,17 +72,17 @@ class inspector(threading.Thread):
 		x = False
 
 		if self.getName() == INSPECTOR1:
-			if  self.shared_mem.read(WORKSTATION1, COMPONENT1) == 2 and \
-				self.shared_mem.read(WORKSTATION2, COMPONENT1) == 2 and \
-				self.shared_mem.read(WORKSTATION3, COMPONENT1) == 2:
+			if  self.shared_mem.read(WORKSTATION1, COMPONENT1) == BUFFSIZE and \
+				self.shared_mem.read(WORKSTATION2, COMPONENT1) == BUFFSIZE and \
+				self.shared_mem.read(WORKSTATION3, COMPONENT1) == BUFFSIZE:
 				x = True
 		
 		if self.component.getName() == COMPONENT2:
-			if self.shared_mem.read(WORKSTATION2, COMPONENT2) == 2:
+			if self.shared_mem.read(WORKSTATION2, COMPONENT2) == BUFFSIZE:
 				x = True
 		
 		if self.component.getName() == COMPONENT3:
-			if self.shared_mem.read(WORKSTATION3, COMPONENT3) == 2:
+			if self.shared_mem.read(WORKSTATION3, COMPONENT3) == BUFFSIZE:
 				x = True
 		
 		return x

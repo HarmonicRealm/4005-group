@@ -4,7 +4,6 @@ import threading
 from datetime import datetime, timedelta
 from constants import *
 
-
 class workstation(threading.Thread):
 	def __init__(self, name, shm):
 		threading.Thread.__init__(self)

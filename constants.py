@@ -1,4 +1,5 @@
-SIZE = 300
+SIZE = 150
+BUFFSIZE = 4
 INSPECTOR1 = 'inspector 1'
 INSPECTOR2 = 'inspector 2'
 WORKSTATION1 = 'workstation 1'
