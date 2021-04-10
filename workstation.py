@@ -1,6 +1,7 @@
 import time
 import numpy as np
 import threading
+from datetime import datetime, timedelta
 from constants import *
 
 
@@ -12,6 +13,7 @@ class workstation(threading.Thread):
 		self.shared_mem = shm
 		self.production_time = 0
 		self.total_work_time = 0
+		self.start_work_time = datetime.now()
 
 	def run(self):
 		while self.shared_mem.isRunning():
@@ -19,6 +21,8 @@ class workstation(threading.Thread):
 				self.setProductionTime()
 				self.setProductsMade()
 
+		elapsed_time = datetime.now() - self.getStartTime()
+		self.total_work_time = elapsed_time.total_seconds()
 		self.dumpStats()
 		return
 
@@ -63,7 +67,7 @@ class workstation(threading.Thread):
 ##	dump stats into txt files
 
 	def dumpStats(self):
-		t = 0
+		t = self.total_work_time
 		if self.getName() == WORKSTATION1:
 			f = './output/ws1out'
 		elif self.getName() == WORKSTATION2:
@@ -89,3 +93,5 @@ class workstation(threading.Thread):
 	def getTotalWorkTime(self):
 		return self.total_work_time
 
+	def getStartTime(self):
+		return self.start_work_time
